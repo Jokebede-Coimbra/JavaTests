@@ -1,8 +1,9 @@
 package com.example.swplanetapi.controller;
 
 import com.example.swplanetapi.controllers.PlanetController;
+import com.example.swplanetapi.domain.Planet;
 import com.example.swplanetapi.services.PlanetService;
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -38,6 +39,23 @@ public class PlanetControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$").value(PLANET));
+    }
+
+    @Test
+    public void createPlanet_WithInvalidDate_ReturnsBadRequest() throws Exception {
+        Planet emptyPlanet = new Planet();
+        Planet invalidPlanet = new Planet("", "", "");
+
+        mockMvc.perform(
+                post("/planets").content(objectMapper.writeValueAsString(emptyPlanet))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity()); // 422
+
+        mockMvc.perform(
+                post("/planets").content(objectMapper.writeValueAsString(invalidPlanet))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity()); // 422
+
     }
 
 }
