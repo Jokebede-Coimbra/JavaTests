@@ -4,7 +4,7 @@ import com.example.swplanetapi.controllers.PlanetController;
 import com.example.swplanetapi.domain.Planet;
 import com.example.swplanetapi.services.PlanetService;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -94,4 +94,21 @@ public class PlanetControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    public void getPlanet_ByExistingName_ReturnsPlanet() throws Exception {
+        when(planetService.getByName(PLANET.getName())).thenReturn(Optional.of(PLANET));
+
+        mockMvc.perform(
+                get("/planets/name/" + PLANET.getName()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(PLANET));
+    }
+
+    @Test
+    public void getPlanet_ByUnexistingName_ReturnsNotFound() throws Exception {
+
+        mockMvc.perform(get("/planets/name/1"))
+                .andExpect(status().isNotFound());
+
+    }
 }

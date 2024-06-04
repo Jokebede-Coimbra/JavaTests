@@ -2,7 +2,7 @@ package com.example.swplanetapi.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static com.example.swplanetapi.common.PlanetConstants.PLANET;
-import static com.example.swplanetapi.common.PlanetConstants.INVALID_PLANET;
+
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.example.swplanetapi.domain.Planet;
@@ -67,4 +67,33 @@ public class PlanetRepositoryTest {
         assertThat(planetOpt.isEmpty());
 
     }
+
+    @Test
+    public void getPlanet_ByExistingName_ReturnsPlanet() {
+        Planet planet = testEntityManager.persistFlushFind(PLANET);
+
+        Optional<Planet> planetOpt = planetRepository.findByName(planet.getName());
+
+        assertThat(planetOpt).isNotEmpty();
+        assertThat(planetOpt.get()).isEqualTo(planet);
+    }
+
+    @Test
+    public void getPlanet_ByUnexistingName_ReturnsNotFound() {
+        Optional<Planet> planetOpt = planetRepository.findByName("name");
+
+        assertThat(planetOpt).isEmpty();
+    }
+
+    @Test
+    public void listPlanets_ReturnsFilteredPlanets() {
+        // TODO implement
+    }
+
+    @Test
+    public void listPlanets_ReturnsNoPlanets() {
+        // TODO implement
+    }
+
+
 }
